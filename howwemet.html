@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How We Met &middot; T &amp; S</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="howwemet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <canvas id="embers"></canvas>
+
+  <header class="ex-hero">
+    <img class="ex-mark" src="logo.jpeg" >
+    <p class="ex-kicker">An Exhibit</p>
+    <h1 class="ex-title foil">How We Met</h1>
+    <p class="ex-sub">the small moments that became us</p>
+    <div class="ex-scroll"><div class="line"></div><span>Begin</span></div>
+  </header>
+
+  <div class="thread-wrap">
+    <div class="thread"><div class="thread-fill" id="threadFill"></div></div>
+  </div>
+
+  <main class="story">
+
+    <section class="chapter" data-n="I">
+      <div class="chapter-marker"><span class="num">I</span></div>
+      <div class="chapter-body">
+        <p class="chapter-eyebrow">[September, 2024] &middot; [City / Place]</p>
+        <h2 class="chapter-title">The First Time</h2>
+        <p class="chapter-text">
+          How we met you ask? To put it plainly, we met on the gram. Looking that good she left me no choice!
+        </p>
+      </div>
+    </section>
+
+    <section class="chapter reverse" data-n="II">
+      <div class="chapter-marker"><span class="num">II</span></div>
+      <div class="chapter-body">
+        <p class="chapter-eyebrow">[October, 2024]</p>
+        <h2 class="chapter-title">The Spark</h2>
+        <p class="chapter-text">
+          At this point we had seen each other a few times. We were walking up a steep hill and a tire was rolling down hill and so me being the strong person i am i stopped it. Im not talking small things i am talking about the tractor tires. Anyway, she then said i should not touch her with dirty hands and i did it anyway. May sound small but it was the reason i realised there could be something here
+        </p>
+      </div>
+    </section>
+
+    <section class="chapter" data-n="III">
+      <div class="chapter-marker"><span class="num">III</span></div>
+      <div class="chapter-body">
+        <p class="chapter-eyebrow">[November, 2024]</p>
+        <h2 class="chapter-title">Getting to Know You</h2>
+        <p class="chapter-text">
+            We spoke everyday for a good 2 months. With every conversation, every joke and just everything in between, i was captivated more and more. Every conversation and every word uttered by her drew me in. 
+        </p>
+      </div>
+    </section>
+
+    <section class="chapter reverse" data-n="IV">
+      <div class="chapter-marker"><span class="num">IV</span></div>
+      <div class="chapter-body">
+        <p class="chapter-eyebrow">[December, 2024]</p>
+        <h2 class="chapter-title">Falling</h2>
+        <p class="chapter-text">
+            I had a very long day that day. She asked to see me after it had rained profusely before that and i obviously agreed. We took a walk and then she did it! She did what made me fall for her forever. She pushed me in a puddle of water. Humour, something often absent in romantic relationships.
+        </p>
+      </div>
+    </section>
+
+    <section class="chapter finale" data-n="V">
+      <div class="chapter-marker"><span class="num">V</span></div>
+      <div class="chapter-body">
+        <p class="chapter-eyebrow">Today</p>
+        <h2 class="chapter-title">And Still</h2>
+        <p class="chapter-text">
+          [Where you are now — a line about what it's like today, and why you'd choose it again.]
+        </p>
+        <div class="finale-heart"><span></span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>Made with love &middot; T &amp; S</footer>
+
+<script>
+  // Embers
+  const canvas = document.getElementById('embers');
+  const ctx = canvas.getContext('2d');
+  let w, h, embers = [];
+  const EMBER_COUNT = 42;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function makeEmber(){
+    return {
+      x: Math.random() * w,
+      y: h + Math.random() * h,
+      r: 0.6 + Math.random() * 1.8,
+      speed: 0.15 + Math.random() * 0.35,
+      drift: (Math.random() - 0.5) * 0.3,
+      alpha: 0.15 + Math.random() * 0.35,
+      flicker: Math.random() * Math.PI * 2
+    };
+  }
+  for(let i=0;i<EMBER_COUNT;i++) embers.push(makeEmber());
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    if(!reduceMotion){
+      embers.forEach(e => {
+        e.y -= e.speed;
+        e.x += e.drift;
+        e.flicker += 0.02;
+        if(e.y < -10){ Object.assign(e, makeEmber(), { y: h + 10 }); }
+        const a = e.alpha * (0.6 + 0.4 * Math.sin(e.flicker));
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(212,175,110,${a})`;
+        ctx.shadowColor = 'rgba(244,215,146,0.6)';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+      });
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  // Scroll-linked thread
+  const threadFill = document.getElementById('threadFill');
+  const storyEl = document.querySelector('.story');
+  function updateThread(){
+    const rect = storyEl.getBoundingClientRect();
+    const total = storyEl.offsetHeight - window.innerHeight * 0.5;
+    const scrolled = Math.min(Math.max(-rect.top, 0), total);
+    const pct = total > 0 ? (scrolled / total) * 100 : 0;
+    threadFill.style.height = pct + '%';
+  }
+  document.addEventListener('scroll', updateThread, { passive: true });
+  updateThread();
+
+  // Chapter reveals
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.chapter').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
